@@ -1,24 +1,5 @@
 #include "Cart.h"
 
-void Cart :: shuffleArray(std :: vector< std :: string>& arr, int n) {
-    srand(time(nullptr));
-    for (int i = n - 1; i > 0; --i) {
-        int j = rand() % (i + 1);
-        swap(arr[i], arr[j]);
-    }
-}
-
-std :: vector < std :: string > Cart :: dealCards (int numCards) {
-    readFile();
-    shuffleArray(cards, cards.size());
-    std :: vector < std :: string > dealtCards;
-    for (int i = 0; i < numCards; i++) {
-        dealtCards.push_back(cards.back());
-        cards.pop_back();
-    }
-    return dealtCards;
-}
-
 int Cart :: readFile(){
     //open the file
     std :: ifstream infile("cards.txt");
@@ -34,4 +15,32 @@ int Cart :: readFile(){
     }
     infile.close();
     return 0;
+}
+
+void Cart ::shuffleCards(){
+
+    std::shuffle(cards.begin(), cards.end(), std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count()));
+
+}
+
+void Cart :: use(){}
+
+void Cart :: pushCardToBurnedCards(std :: string card){
+    BurnedCards.push_back(card);
+}
+
+void Cart :: print(){
+    for (int i = 0; i <BurnedCards.size(); i++)
+    {
+        std :: cout <<BurnedCards[i];
+    }
+    
+}
+
+int Cart::returnSize(){
+    return BurnedCards.size();
+}
+
+void Cart::printIndex(int n){
+    std ::cout << BurnedCards[n-1];
 }
