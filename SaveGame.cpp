@@ -1,7 +1,7 @@
 #include "SaveGame.h"
 
 
-void SaveGame:: saveGame(std :: vector < Player > &player , int number){
+void SaveGame:: saveGame(std :: vector < Player > &player , int number  , int startingPlayerIndex , std ::string warProvice){
     
     std::string filename = generateFilename();
     std::ofstream outFile(filename);
@@ -9,7 +9,11 @@ void SaveGame:: saveGame(std :: vector < Player > &player , int number){
         std::cerr << "Could not open file for saving game state.\n";
         return;
     }
+
     outFile << number << '\n';
+    outFile << startingPlayerIndex << '\n'; //Save starting player index
+    outFile << warProvice << '\n';
+
     for ( auto& players : player) {
         outFile << players.getName() << '\n';
         outFile << players.getHeroine() << '\n';
@@ -44,7 +48,7 @@ void SaveGame:: saveGame(std :: vector < Player > &player , int number){
     outFile.close();
 }
 
-bool SaveGame ::loadGame( const std::string& filename , std::vector<Player>& players , int& number ){
+bool SaveGame ::loadGame( const std::string& filename , std::vector<Player>& players , int& number , int& startingPlayerIndex , std :: string &warProvince){
     if (!fileExists(filename)) {
         std::cerr << "File does not exist.\n";
         return false;
@@ -54,7 +58,10 @@ bool SaveGame ::loadGame( const std::string& filename , std::vector<Player>& pla
         std::cerr << "Could not open file for loading game state.\n";
         return false;
     }
-     inFile >> number;
+    inFile >> number ;
+    inFile >> startingPlayerIndex;  // Load starting player index
+    inFile.ignore();
+    std::getline(inFile, warProvince);
     inFile.ignore();
 
     players.clear();
@@ -70,7 +77,7 @@ bool SaveGame ::loadGame( const std::string& filename , std::vector<Player>& pla
         player.setName(name);
         player.setAge(age);
         player.setScoreOfPlayer(score);
-        //player.plusHeroine(heroine);
+        player.setHeroine(heroine);
         player.chengePass(pass);
 
         // Load hand
@@ -161,3 +168,5 @@ bool SaveGame ::fileExists(const std::string& filename) {
     std::ifstream file(filename);
     return file.is_open();
 }
+
+
